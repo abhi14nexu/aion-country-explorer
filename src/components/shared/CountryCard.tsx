@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { memo, useCallback } from 'react';
 import { CountryBasic } from '@/types/country';
 import { useAppStore } from '@/store/appStore';
+import { toast } from '@/components/ui/Toast';
 
 interface CountryCardProps {
   country: CountryBasic;
@@ -34,9 +35,29 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
     e.stopPropagation(); // Stop event bubbling
     
     if (isAuthenticated) {
+      const wasAlreadyFavorited = isFavorited;
       toggleFavorite(cca2.toLowerCase());
+      
+      // Show toast notification
+      if (wasAlreadyFavorited) {
+        toast.info(`${name.common} removed from favorites`, {
+          duration: 3000,
+          action: {
+            label: 'Undo',
+            onClick: () => toggleFavorite(cca2.toLowerCase())
+          }
+        });
+      } else {
+        toast.success(`${name.common} added to favorites!`, {
+          duration: 3000,
+          action: {
+            label: 'View All',
+            onClick: () => window.location.href = '/favorites'
+          }
+        });
+      }
     }
-  }, [isAuthenticated, toggleFavorite, cca2]);
+  }, [isAuthenticated, toggleFavorite, cca2, isFavorited, name.common]);
 
   // Memoized formatted values
   const formattedPopulation = formatPopulation(population);

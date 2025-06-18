@@ -1,18 +1,38 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { getAllCountries } from '@/lib/api';
 import { CountryBasic } from '@/types/country';
 import CountryCard from '@/components/shared/CountryCard';
 import { CountryGridSkeleton } from '@/components/ui/LoadingSkeleton';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { toast } from '@/components/ui/Toast';
+
+type SortOption = 'name' | 'dateAdded' | 'population' | 'region';
+type SortOrder = 'asc' | 'desc';
 
 const FavoritesClient: React.FC = () => {
-  const { favorites, isAuthenticated } = useAppStore();
+  const { 
+    favorites, 
+    isAuthenticated, 
+    favoritesMetadata, 
+    exportFavorites, 
+    importFavorites, 
+    clearAllFavorites,
+    getRecentlyAdded,
+    getFavoritesByDate
+  } = useAppStore();
+  
   const [allCountries, setAllCountries] = useState<CountryBasic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>('name');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [selectedRegion, setSelectedRegion] = useState<string>('');
+  const [showRecentlyAdded, setShowRecentlyAdded] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch all countries to match with favorites
   useEffect(() => {
@@ -48,12 +68,142 @@ const FavoritesClient: React.FC = () => {
     );
   }, [allCountries, favorites]);
 
-  // Sort favorites alphabetically
-  const sortedFavorites = useMemo(() => {
-    return [...favoriteCountries].sort((a, b) => 
-      a.name.common.localeCompare(b.name.common)
-    );
+  // Apply filtering and sorting
+  const filteredAndSortedFavorites = useMemo(() => {
+    let filtered = [...favoriteCountries];
+
+    // Filter by region if selected
+    if (selectedRegion) {
+      filtered = filtered.filter(country => country.region === selectedRegion);
+    }
+
+    // Filter by recently added if enabled
+    if (showRecentlyAdded) {
+      const recentCodes = getRecentlyAdded(10);
+      filtered = filtered.filter(country => recentCodes.includes(country.cca2.toLowerCase()));
+    }
+
+    // Sort countries
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = a.name.common.localeCompare(b.name.common);
+          break;
+        case 'population':
+          comparison = a.population - b.population;
+          break;
+        case 'region':
+          comparison = a.region.localeCompare(b.region);
+          break;
+        case 'dateAdded':
+          const aTime = favoritesMetadata[a.cca2.toLowerCase()]?.addedAt || 0;
+          const bTime = favoritesMetadata[b.cca2.toLowerCase()]?.addedAt || 0;
+          comparison = aTime - bTime;
+          break;
+        default:
+          comparison = a.name.common.localeCompare(b.name.common);
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [favoriteCountries, selectedRegion, showRecentlyAdded, sortBy, sortOrder, favoritesMetadata, getRecentlyAdded]);
+
+  // Get unique regions from favorites
+  const availableRegions = useMemo(() => {
+    const regions = new Set(favoriteCountries.map(country => country.region));
+    return Array.from(regions).sort();
   }, [favoriteCountries]);
+
+  // Recently added countries for quick access
+  const recentlyAddedCountries = useMemo(() => {
+    const recentCodes = getRecentlyAdded(5);
+    return favoriteCountries.filter(country => 
+      recentCodes.includes(country.cca2.toLowerCase())
+    );
+  }, [favoriteCountries, getRecentlyAdded]);
+
+  // Handle sort change
+  const handleSortChange = (newSortBy: SortOption) => {
+    if (sortBy === newSortBy) {
+      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(newSortBy);
+      setSortOrder('asc');
+    }
+  };
+
+  // Export favorites
+  const handleExport = () => {
+    try {
+      const jsonData = exportFavorites();
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `aion-favorites-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success('Favorites exported successfully!', {
+        duration: 4000,
+      });
+    } catch (error) {
+      toast.error('Failed to export favorites');
+    }
+  };
+
+  // Import favorites
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const success = importFavorites(content);
+        
+        if (success) {
+          toast.success('Favorites imported successfully!', {
+            duration: 4000,
+          });
+        } else {
+          toast.error('Invalid file format. Please check your file and try again.');
+        }
+      } catch (error) {
+        toast.error('Failed to read the file');
+      }
+    };
+    
+    reader.readAsText(file);
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Clear all favorites with confirmation
+  const handleClearAll = () => {
+    if (favorites.length === 0) return;
+    
+    const isConfirmed = window.confirm(
+      `Are you sure you want to remove all ${favorites.length} countries from your favorites? This action cannot be undone.`
+    );
+    
+    if (isConfirmed) {
+      clearAllFavorites();
+      toast.info('All favorites cleared', {
+        duration: 3000,
+      });
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -123,60 +273,256 @@ const FavoritesClient: React.FC = () => {
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             You have {favorites.length} favorite {favorites.length === 1 ? 'country' : 'countries'}. 
-            Click on any country to explore detailed information or remove it from your favorites.
+            Organize, sort, and manage your collection with the tools below.
           </p>
+        </div>
+
+        {/* Recently Added Quick Access */}
+        {recentlyAddedCountries.length > 0 && !showRecentlyAdded && (
+          <div className="mb-8 bg-blue-50 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-blue-800">
+                Recently Added
+              </h2>
+              <button
+                onClick={() => setShowRecentlyAdded(true)}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                View All Recent
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {recentlyAddedCountries.map(country => (
+                <a
+                  key={country.cca2}
+                  href={`/country/${country.cca2.toLowerCase()}`}
+                  className="inline-flex items-center px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm rounded-full transition-colors"
+                >
+                  <span className="mr-1">{country.flags.png}</span>
+                  {country.name.common}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Controls */}
+        <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Filtering */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Filter & View</h3>
+              <div className="space-y-3">
+                <select
+                  value={selectedRegion}
+                  onChange={(e) => setSelectedRegion(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  <option value="">All Regions</option>
+                  {availableRegions.map(region => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={showRecentlyAdded}
+                    onChange={(e) => setShowRecentlyAdded(e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Recently added only</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Sorting */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Sort By</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: 'name', label: 'Name' },
+                  { key: 'dateAdded', label: 'Date Added' },
+                  { key: 'population', label: 'Population' },
+                  { key: 'region', label: 'Region' },
+                ].map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => handleSortChange(key as SortOption)}
+                    className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
+                      sortBy === key
+                        ? 'bg-blue-100 border-blue-300 text-blue-800'
+                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {label} {sortBy === key && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Manage</h3>
+              <div className="space-y-2">
+                <button
+                  onClick={handleExport}
+                  className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  Export Favorites
+                </button>
+                
+                <label className="block">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json"
+                    onChange={handleImport}
+                    className="sr-only"
+                  />
+                  <span className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer inline-block text-center">
+                    Import Favorites
+                  </span>
+                </label>
+                
+                <button
+                  onClick={handleClearAll}
+                  disabled={favorites.length === 0}
+                  className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Statistics */}
         <div className="mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{favorites.length}</div>
-              <div className="text-sm text-gray-600">Favorite Countries</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {filteredAndSortedFavorites.length}
+              </div>
+              <div className="text-sm text-gray-600">
+                {selectedRegion || showRecentlyAdded ? 'Shown' : 'Total'} Favorites
+              </div>
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-4 text-center">
               <div className="text-2xl font-bold text-green-600">
-                {new Set(sortedFavorites.map(c => c.region)).size}
+                {new Set(filteredAndSortedFavorites.map(c => c.region)).size}
               </div>
               <div className="text-sm text-gray-600">Regions</div>
             </div>
             
             <div className="bg-white rounded-lg shadow-md p-4 text-center">
               <div className="text-2xl font-bold text-purple-600">
-                {sortedFavorites.reduce((sum, country) => sum + country.population, 0).toLocaleString()}
+                {Math.round(filteredAndSortedFavorites.reduce((sum, country) => sum + country.population, 0) / 1000000)}M
               </div>
               <div className="text-sm text-gray-600">Total Population</div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-4 text-center">
+              <div className="text-2xl font-bold text-orange-600">
+                {getRecentlyAdded().length}
+              </div>
+              <div className="text-sm text-gray-600">Recent Additions</div>
             </div>
           </div>
         </div>
 
+        {/* Active Filters Display */}
+        {(selectedRegion || showRecentlyAdded) && (
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-gray-600">Active filters:</span>
+              {selectedRegion && (
+                <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                  Region: {selectedRegion}
+                  <button
+                    onClick={() => setSelectedRegion('')}
+                    className="ml-1 text-green-600 hover:text-green-800"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              {showRecentlyAdded && (
+                <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  Recently Added
+                  <button
+                    onClick={() => setShowRecentlyAdded(false)}
+                    className="ml-1 text-blue-600 hover:text-blue-800"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setSelectedRegion('');
+                  setShowRecentlyAdded(false);
+                }}
+                className="text-xs text-gray-500 hover:text-gray-700"
+              >
+                Clear all filters
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Regions Breakdown */}
-        {sortedFavorites.length > 0 && (
+        {filteredAndSortedFavorites.length > 0 && !selectedRegion && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
               Favorites by Region
             </h2>
             <div className="flex flex-wrap justify-center gap-2">
-              {Array.from(new Set(sortedFavorites.map(c => c.region))).map(region => {
-                const count = sortedFavorites.filter(c => c.region === region).length;
+              {Array.from(new Set(favoriteCountries.map(c => c.region))).map(region => {
+                const count = favoriteCountries.filter(c => c.region === region).length;
                 return (
-                  <span
+                  <button
                     key={region}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    onClick={() => setSelectedRegion(region)}
+                    className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm rounded-full transition-colors cursor-pointer"
                   >
                     {region} ({count})
-                  </span>
+                  </button>
                 );
               })}
             </div>
           </div>
         )}
 
+        {/* No Results After Filtering */}
+        {filteredAndSortedFavorites.length === 0 && favorites.length > 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No favorites match your filters
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Try adjusting your filter settings to see more results.
+            </p>
+            <button
+              onClick={() => {
+                setSelectedRegion('');
+                setShowRecentlyAdded(false);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        )}
+
         {/* Countries Grid */}
-        {sortedFavorites.length > 0 ? (
+        {filteredAndSortedFavorites.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {sortedFavorites.map((country, index) => (
+            {filteredAndSortedFavorites.map((country, index) => (
               <CountryCard 
                 key={country.cca2} 
                 country={country}
@@ -184,18 +530,13 @@ const FavoritesClient: React.FC = () => {
               />
             ))}
           </div>
-        ) : (
-          // Loading state for when favorites exist but countries aren't loaded yet
-          <div className="text-center py-8">
-            <div className="text-lg text-gray-600">Loading your favorite countries...</div>
-          </div>
         )}
 
         {/* Footer Actions */}
         <div className="mt-12 text-center">
           <div className="space-y-4">
             <p className="text-gray-600">
-              Want to discover more countries?
+              Ready to discover more amazing countries?
             </p>
             <div className="space-x-4">
               <a
@@ -214,13 +555,13 @@ const FavoritesClient: React.FC = () => {
                     if (navigator.share) {
                       navigator.share({
                         title: 'My Favorite Countries',
-                        text: `Check out my ${favorites.length} favorite countries: ${sortedFavorites.slice(0, 3).map(c => c.name.common).join(', ')}${favorites.length > 3 ? ' and more!' : '!'}`,
+                        text: `Check out my ${favorites.length} favorite countries: ${filteredAndSortedFavorites.slice(0, 3).map(c => c.name.common).join(', ')}${favorites.length > 3 ? ' and more!' : '!'}`,
                         url: window.location.href,
                       });
                     } else {
                       // Fallback for browsers without Web Share API
                       navigator.clipboard.writeText(window.location.href);
-                      alert('Link copied to clipboard!');
+                      toast.success('Link copied to clipboard!');
                     }
                   }}
                   className="inline-flex items-center bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
