@@ -6,17 +6,13 @@ export default async function Home() {
     // Fetch countries data at build time (SSG)
     const countries = await getAllCountries();
 
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <CountryListContainer countries={countries} />
-      </main>
-    );
+    return <CountryListContainer countries={countries} />;
   } catch (error) {
     // Error fallback UI
     console.error('Failed to load countries:', error);
     
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             Unable to Load Countries
@@ -34,7 +30,7 @@ export default async function Home() {
             Retry
           </button>
         </div>
-      </main>
+      </div>
     );
   }
 }
