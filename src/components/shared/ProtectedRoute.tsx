@@ -25,13 +25,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const { isAuthenticated } = useAppStore();
+  const { isAuthenticated, syncAuthWithCookie } = useAppStore();
   const router = useRouter();
 
-  // Handle hydration
+  // Handle hydration and sync auth state
   useEffect(() => {
+    syncAuthWithCookie(); // Sync store with cookie state
     setIsHydrated(true);
-  }, []);
+  }, [syncAuthWithCookie]);
 
   // Handle authentication redirect
   useEffect(() => {

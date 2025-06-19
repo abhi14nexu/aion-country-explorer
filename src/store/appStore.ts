@@ -18,6 +18,7 @@ interface AppState {
   importFavorites: (jsonData: string) => boolean;
   getRecentlyAdded: (limit?: number) => string[];
   getFavoritesByDate: (ascending?: boolean) => string[];
+  syncAuthWithCookie: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -236,6 +237,20 @@ export const useAppStore = create<AppState>()(
           const bTime = favoritesMetadata[b]?.addedAt || 0;
           return ascending ? aTime - bTime : bTime - aTime;
         });
+      },
+
+      syncAuthWithCookie: () => {
+        if (typeof document !== 'undefined') {
+          const hasAuthCookie = document.cookie.includes('aion-auth=authenticated');
+          const { isAuthenticated } = get();
+          
+          // Sync store state with cookie state
+          if (hasAuthCookie && !isAuthenticated) {
+            set({ isAuthenticated: true });
+          } else if (!hasAuthCookie && isAuthenticated) {
+            set({ isAuthenticated: false });
+          }
+        }
       },
     }),
     {

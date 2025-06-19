@@ -62,9 +62,12 @@ function LoginForm() {
 
     // Check credentials (mock)
     if (trimmedUsername === 'testuser' && trimmedPassword === 'password123') {
-      document.cookie = 'aion-auth=authenticated; path=/; max-age=86400'; // 24 hours
-      login();
-      router.push(returnUrl);
+      login(); // This will set the cookie automatically
+      
+      // Use window.location for more reliable redirect
+      setTimeout(() => {
+        window.location.href = returnUrl;
+      }, 100);
     } else {
       setError('Invalid username or password. Please try again.');
     }
