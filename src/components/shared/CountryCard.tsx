@@ -23,7 +23,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
     return new Intl.NumberFormat('en-US').format(pop);
   }, []);
 
-  // Get capital name or show fallback
+  // Get capital names
   const getCapital = useCallback((): string => {
     if (!capital || capital.length === 0) return 'No capital';
     return capital[0]; // Show first capital if multiple
@@ -64,36 +64,46 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
   const capitalCity = getCapital();
 
   return (
-    <div className="group block transform transition-transform duration-200 hover:scale-105">
+    // Use article for semantic grouping of card content
+    <article
+      className="group block transform transition-transform duration-200 hover:scale-105"
+      role="article"
+      aria-labelledby={`country-card-title-${cca2}`}
+      tabIndex={0} // Make card focusable for keyboard users
+    >
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden dark:bg-neutral-900 dark:shadow-lg">
         {/* Flag Image */}
-        <Link href={`/country/${cca2.toLowerCase()}`}>
-          <div className="relative h-48 w-full">
-            <Image
-              src={flags.png}
-              alt={`Flag of ${name.common}`}
-              fill
-              className="object-cover group-hover:brightness-110 transition-all duration-200"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              priority={priority}
-              quality={85}
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rw="
-            />
-          </div>
+        <Link href={`/country/${cca2.toLowerCase()}`} legacyBehavior passHref>
+          <a aria-label={`View details for ${name.common}`}> {/* Accessible link label */}
+            <div className="relative h-48 w-full">
+              <Image
+                src={flags.png}
+                alt={`Flag of ${name.common}`} // Descriptive alt text
+                fill
+                className="object-cover group-hover:brightness-110 transition-all duration-200"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                priority={priority}
+                quality={85}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rw="
+              />
+            </div>
+          </a>
         </Link>
 
         {/* Card Content */}
         <div className="p-6">
           {/* Country Name */}
-          <Link href={`/country/${cca2.toLowerCase()}`}>
-            <h3 className="font-bold text-xl mb-4 text-gray-800 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 dark:text-gray-100 dark:group-hover:text-blue-400">
-              {name.common}
-            </h3>
+          <Link href={`/country/${cca2.toLowerCase()}`} legacyBehavior passHref>
+            <a id={`country-card-title-${cca2}`} className="focus:outline-none focus:ring-2 focus:ring-blue-400 rounded" aria-label={`View details for ${name.common}`}> {/* Accessible link label */}
+              <h3 className="font-bold text-xl mb-4 text-gray-800 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 dark:text-gray-100 dark:group-hover:text-blue-400">
+                {name.common}
+              </h3>
+            </a>
           </Link>
 
           {/* Country Details */}
-          <div className="space-y-2 text-gray-600 dark:text-gray-300">
+          <section className="space-y-2 text-gray-600 dark:text-gray-300" aria-label="Country details">
             <div className="flex">
               <span className="font-semibold min-w-20 flex-shrink-0">Population:</span>
               <span className="truncate">{formattedPopulation}</span>
@@ -108,7 +118,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
               <span className="font-semibold min-w-20 flex-shrink-0">Capital:</span>
               <span className="truncate">{capitalCity}</span>
             </div>
-          </div>
+          </section>
 
           {/* Favorite Icon */}
           <div className="mt-4 flex justify-end">
@@ -121,7 +131,9 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
                   : 'cursor-not-allowed opacity-50'
               }`}
               title={isAuthenticated ? (isFavorited ? 'Remove from favorites' : 'Add to favorites') : 'Login to add favorites'}
-              aria-label={isAuthenticated ? (isFavorited ? 'Remove from favorites' : 'Add to favorites') : 'Login to add favorites'}
+              aria-label={isAuthenticated ? (isFavorited ? `Remove ${name.common} from favorites` : `Add ${name.common} to favorites`) : 'Login to add favorites'}
+              aria-pressed={isFavorited && isAuthenticated ? 'true' : 'false'} // Indicate toggle state
+              tabIndex={0} // Ensure button is focusable
             >
               <span className={`text-lg transition-colors duration-200 ${
                 isFavorited && isAuthenticated 
@@ -129,14 +141,14 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
                   : isAuthenticated 
                     ? 'text-gray-400 hover:text-red-400 dark:text-gray-500 dark:hover:text-red-300' 
                     : 'text-gray-300 dark:text-gray-600'
-              }`}>
+              }`} aria-hidden="true">
                 {isFavorited && isAuthenticated ? '❤️' : '🤍'}
               </span>
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 
