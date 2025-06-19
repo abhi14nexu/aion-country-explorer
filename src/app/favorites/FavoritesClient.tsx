@@ -279,30 +279,45 @@ const FavoritesClient: React.FC = () => {
 
         {/* Recently Added Quick Access */}
         {recentlyAddedCountries.length > 0 && !showRecentlyAdded && (
-          <div className="mb-8 bg-blue-50 rounded-lg p-6">
+          <div className="mb-8 bg-blue-50 rounded-lg p-6 dark:bg-blue-900/20">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-blue-800">
+              <h2 className="text-lg font-semibold text-blue-800 dark:text-blue-300 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 Recently Added
               </h2>
               <button
                 onClick={() => setShowRecentlyAdded(true)}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
               >
-                View All Recent
+                View All Recent →
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {recentlyAddedCountries.map(country => (
+              {recentlyAddedCountries.map((country, index) => (
                 <a
                   key={country.cca2}
                   href={`/country/${country.cca2.toLowerCase()}`}
-                  className="inline-flex items-center px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm rounded-full transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-white hover:bg-blue-100 text-blue-800 text-sm rounded-full transition-all duration-200 shadow-sm hover:shadow-md border border-blue-200 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-700/40 group"
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <span className="mr-1">{country.flags.png}</span>
-                  {country.name.common}
+                  {/* Country icon instead of flag image */}
+                  <svg className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="font-medium">{country.name.common}</span>
+                  {/* Small sparkle effect for recently added */}
+                  <span className="ml-2 text-yellow-400 text-xs animate-pulse">✨</span>
                 </a>
               ))}
             </div>
+            {recentlyAddedCountries.length > 3 && (
+              <p className="text-xs text-blue-600 mt-3 dark:text-blue-400">
+                Showing {recentlyAddedCountries.length} most recent additions
+              </p>
+            )}
           </div>
         )}
 
