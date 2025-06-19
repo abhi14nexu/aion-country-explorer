@@ -26,19 +26,19 @@ const nativeNameSchema = z.object({
 // Currency schema
 const currencySchema = z.object({
   name: z.string(),
-  symbol: z.string().optional(),
+  symbol: z.string().nullable().optional(),
 });
 
 // Maps schema
 const mapsSchema = z.object({
-  googleMaps: z.string().url().optional(),
-  openStreetMaps: z.string().url().optional(),
+  googleMaps: z.string().url().nullable().optional(),
+  openStreetMaps: z.string().url().nullable().optional(),
 });
 
 // Car information schema
 const carSchema = z.object({
-  side: z.string().optional(),
-  signs: z.array(z.string()).optional(),
+  side: z.string().nullable().optional(),
+  signs: z.array(z.string()).nullable().optional(),
 });
 
 // Demonyms schema
@@ -48,25 +48,25 @@ const demonymsLangSchema = z.object({
 });
 
 const demonymsSchema = z.object({
-  eng: demonymsLangSchema.optional(),
-  fra: demonymsLangSchema.optional(),
+  eng: demonymsLangSchema.nullable().optional(),
+  fra: demonymsLangSchema.nullable().optional(),
 });
 
 // Capital info schema
 const capitalInfoSchema = z.object({
-  latlng: z.array(z.number()).optional(),
+  latlng: z.array(z.number()).nullable().optional(),
 });
 
 // Postal code schema
 const postalCodeSchema = z.object({
-  format: z.string().optional(),
-  regex: z.string().optional(),
+  format: z.string().nullable().optional(),
+  regex: z.string().nullable().optional(),
 });
 
 // Coat of arms schema
 const coatOfArmsSchema = z.object({
-  png: z.string().url().optional(),
-  svg: z.string().url().optional(),
+  png: z.string().url().nullable().optional(),
+  svg: z.string().url().nullable().optional(),
 });
 
 // Detailed country schema for detail views
@@ -74,42 +74,42 @@ export const countryDetailSchema = z.object({
   name: z.object({
     common: z.string(),
     official: z.string(),
-    nativeName: z.record(z.string(), nativeNameSchema).optional(),
+    nativeName: z.record(z.string(), nativeNameSchema).nullable().optional(),
   }),
   cca2: z.string(),
   cca3: z.string(),
-  ccn3: z.string().optional(),
+  ccn3: z.string().nullable().optional(),
   region: z.string(),
-  subregion: z.string().optional(),
+  subregion: z.string().nullable().optional(),
   population: z.number(),
-  area: z.number().optional(),
+  area: z.number().nullable().optional(),
   flags: z.object({
     png: z.string().url(),
     svg: z.string().url(),
-    alt: z.string().optional(),
+    alt: z.string().nullable().optional(),
   }),
-  coatOfArms: coatOfArmsSchema.optional(),
-  capital: z.array(z.string()).optional(),
-  languages: z.record(z.string(), z.string()).optional(),
-  currencies: z.record(z.string(), currencySchema).optional(),
-  timezones: z.array(z.string()).optional(),
-  continents: z.array(z.string()).optional(),
-  borders: z.array(z.string()).optional(),
-  tld: z.array(z.string()).optional(),
-  callingCodes: z.array(z.string()).optional(),
-  independent: z.boolean().optional(),
-  status: z.string().optional(),
-  unMember: z.boolean().optional(),
-  landlocked: z.boolean().optional(),
-  maps: mapsSchema.optional(),
-  car: carSchema.optional(),
-  fifa: z.string().optional(),
-  gini: z.record(z.string(), z.number()).optional(),
-  startOfWeek: z.string().optional(),
-  capitalInfo: capitalInfoSchema.optional(),
-  latlng: z.array(z.number()).optional(),
-  demonyms: demonymsSchema.optional(),
-  postalCode: postalCodeSchema.optional(),
+  coatOfArms: coatOfArmsSchema.nullable().optional(),
+  capital: z.array(z.string()).nullable().optional(),
+  languages: z.record(z.string(), z.string()).nullable().optional(),
+  currencies: z.record(z.string(), currencySchema).nullable().optional(),
+  timezones: z.array(z.string()).nullable().optional(),
+  continents: z.array(z.string()).nullable().optional(),
+  borders: z.array(z.string()).nullable().optional(),
+  tld: z.array(z.string()).nullable().optional(),
+  callingCodes: z.array(z.string()).nullable().optional(),
+  independent: z.boolean().nullable().optional(),
+  status: z.string().nullable().optional(),
+  unMember: z.boolean().nullable().optional(),
+  landlocked: z.boolean().nullable().optional(),
+  maps: mapsSchema.nullable().optional(),
+  car: carSchema.nullable().optional(),
+  fifa: z.string().nullable().optional(),
+  gini: z.record(z.string(), z.number()).nullable().optional(),
+  startOfWeek: z.string().nullable().optional(),
+  capitalInfo: capitalInfoSchema.nullable().optional(),
+  latlng: z.array(z.number()).nullable().optional(),
+  demonyms: demonymsSchema.nullable().optional(),
+  postalCode: postalCodeSchema.nullable().optional(),
 });
 
 // Search filters schema

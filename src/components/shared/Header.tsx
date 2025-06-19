@@ -41,7 +41,7 @@ export default function Header() {
       <div className="h-16 sm:h-20"></div>
       
       {/* Floating Navigation with Glassmorphism */}
-      <header className="fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-50 w-[98%] sm:w-[95%] max-w-6xl">
+      <header className="fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-50 w-[99%] sm:w-[97%] lg:w-[95%] max-w-7xl">
         <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 shadow-lg rounded-xl sm:rounded-2xl">
           <div className="px-3 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center justify-between">

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useRequireAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useAppStore } from '@/store/appStore';
 import { CountryDetailSkeleton } from '@/components/ui/LoadingSkeleton';
 
 interface ProtectedRouteProps {
@@ -22,16 +23,34 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   fallback,
   requireAuth = true,
 }) => {
-  const [isReady, setIsReady] = useState(false);
-  const { isAuthenticated } = useRequireAuth(redirectTo);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const { isAuthenticated } = useAppStore();
+  const router = useRouter();
 
-  // Wait for hydration to complete before showing content
+  // Handle hydration
   useEffect(() => {
-    setIsReady(true);
+    setIsHydrated(true);
   }, []);
 
-  // Show loading state during hydration or auth check
-  if (!isReady) {
+  // Handle authentication redirect
+  useEffect(() => {
+    if (isHydrated && requireAuth && !isAuthenticated && !isRedirecting) {
+      setIsRedirecting(true);
+      const currentPath = window.location.pathname;
+      const loginUrl = redirectTo.includes('?') 
+        ? `${redirectTo}&from=${encodeURIComponent(currentPath)}`
+        : `${redirectTo}?from=${encodeURIComponent(currentPath)}`;
+      
+      // Small delay to prevent hydration issues
+      setTimeout(() => {
+        router.push(loginUrl);
+      }, 100);
+    }
+  }, [isHydrated, isAuthenticated, requireAuth, redirectTo, router, isRedirecting]);
+
+  // Show loading state during hydration or redirect
+  if (!isHydrated || isRedirecting) {
     return fallback || <CountryDetailSkeleton />;
   }
 
@@ -45,7 +64,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <>{children}</>;
   }
 
-  // Fallback during redirect (useRequireAuth handles the redirect)
+  // Fallback during redirect
   return fallback || <CountryDetailSkeleton />;
 };
 
@@ -86,7 +105,7 @@ export const ConditionalProtection: React.FC<{
   showToUnauthenticated = false 
 }) => {
   const [isReady, setIsReady] = useState(false);
-  const { isAuthenticated } = useRequireAuth('/login');
+  const { isAuthenticated } = useAppStore();
 
   useEffect(() => {
     setIsReady(true);

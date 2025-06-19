@@ -92,17 +92,22 @@ export default function CountryListContainer({ countries }: CountryListContainer
         console.error('Country list error:', error);
       }}
     >
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-gray-100">
-            Explore Countries Around the World
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
-            Discover detailed information about {countries.length} countries, including population, 
-            regions, capitals, and more. Use the search and filters below to find specific countries.
-          </p>
+      <div className="bg-gradient-to-b from-green-50/60 via-emerald-50/40 to-transparent dark:from-green-900/15 dark:via-emerald-900/10 dark:to-transparent">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="text-center mb-8 pt-8 pb-12">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-gray-100">
+              Explore Countries Around the World
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+              Discover detailed information about {countries.length} countries, including population, 
+              regions, capitals, and more. Use the search and filters below to find specific countries.
+            </p>
+          </div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 pb-8">
 
         {/* Search and Filter Controls */}
         <SearchAndFilter

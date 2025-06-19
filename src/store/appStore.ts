@@ -31,10 +31,18 @@ export const useAppStore = create<AppState>()(
 
       // Actions
       login: () => {
+        // Set authentication cookie for middleware compatibility
+        if (typeof document !== 'undefined') {
+          document.cookie = 'aion-auth=authenticated; path=/; max-age=86400'; // 24 hours
+        }
         set({ isAuthenticated: true });
       },
 
       logout: () => {
+        // Clear authentication cookie
+        if (typeof document !== 'undefined') {
+          document.cookie = 'aion-auth=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
         set({ 
           isAuthenticated: false,
           favorites: [], // Clear favorites on logout

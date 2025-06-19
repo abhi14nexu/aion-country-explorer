@@ -31,7 +31,17 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Log error details for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Log additional context for development
+    if (process.env.NODE_ENV === 'development') {
+      console.groupCollapsed('Error Boundary Details');
+      console.error('Error:', error);
+      console.error('Error Info:', errorInfo);
+      console.error('Component Stack:', errorInfo.componentStack);
+      console.groupEnd();
+    }
     
     this.setState({
       error,
@@ -40,7 +50,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     // Call the onError callback if provided
     if (this.props.onError) {
-      this.props.onError(error, errorInfo);
+      try {
+        this.props.onError(error, errorInfo);
+      } catch (callbackError) {
+        console.error('Error in ErrorBoundary onError callback:', callbackError);
+      }
     }
   }
 

@@ -134,29 +134,32 @@ const VirtualizedCountryGrid: React.FC<VirtualizedCountryGridProps> = ({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          Explore Countries Around the World
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          {searchTerm || selectedRegion ? (
-            <>
-              Found {filteredCountries.length} countries
-              {searchTerm && ` matching "${searchTerm}"`}
-              {selectedRegion && ` in ${selectedRegion}`}
-            </>
-          ) : (
-            <>
-              Discover detailed information about {filteredCountries.length} countries, including population, 
-              regions, capitals, and more. Click on any country to learn more!
-            </>
-          )}
-        </p>
+    <div className="bg-gradient-to-b from-green-50/60 via-emerald-50/40 to-transparent dark:from-green-900/15 dark:via-emerald-900/10 dark:to-transparent">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8 pt-8 pb-12">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-gray-100">
+            Explore Countries Around the World
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+            {searchTerm || selectedRegion ? (
+              <>
+                Found {filteredCountries.length} countries
+                {searchTerm && ` matching "${searchTerm}"`}
+                {selectedRegion && ` in ${selectedRegion}`}
+              </>
+            ) : (
+              <>
+                Discover detailed information about {filteredCountries.length} countries, including population, 
+                regions, capitals, and more. Click on any country to learn more!
+              </>
+            )}
+          </p>
+        </div>
       </div>
 
-      {/* Virtualized Grid Container */}
+      <div className="container mx-auto px-4">
+        {/* Virtualized Grid Container */}
       <div
         ref={containerRef}
         className="relative overflow-auto"
@@ -194,12 +197,13 @@ const VirtualizedCountryGrid: React.FC<VirtualizedCountryGridProps> = ({
         </div>
       </div>
 
-      {/* Footer Info */}
-      <div className="text-center mt-12 text-gray-500">
-        <p>
-          Showing {visibleCountries.length} of {filteredCountries.length} countries • 
-          Data provided by REST Countries API
-        </p>
+        {/* Footer Info */}
+        <div className="text-center mt-12 text-gray-500">
+          <p>
+            Showing {visibleCountries.length} of {filteredCountries.length} countries • 
+            Data provided by REST Countries API
+          </p>
+        </div>
       </div>
     </div>
   );
