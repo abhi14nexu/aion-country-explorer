@@ -30,57 +30,6 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
     return capital[0]; // Show first capital if multiple
   }, [capital]);
 
-  // Memoized favorite click handler
-  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
-    e.stopPropagation(); // Stop event bubbling
-    
-    if (isAuthenticated) {
-      const wasAlreadyFavorited = isFavorited;
-      
-      // Trigger heart-beat animation
-      setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 600);
-      
-      // Add visual feedback animation
-      const button = e.currentTarget as HTMLButtonElement;
-      button.style.transform = 'scale(0.8)';
-      
-      // Create sparkle effect for adding to favorites
-      if (!wasAlreadyFavorited) {
-        createSparkleEffect(button);
-      }
-      
-      setTimeout(() => {
-        button.style.transform = 'scale(1.1)';
-        setTimeout(() => {
-          button.style.transform = 'scale(1)';
-        }, 150);
-      }, 100);
-      
-      toggleFavorite(cca2.toLowerCase());
-      
-      // Show toast notification
-      if (wasAlreadyFavorited) {
-        toast.info(`${name.common} removed from favorites`, {
-          duration: 3000,
-          action: {
-            label: 'Undo',
-            onClick: () => toggleFavorite(cca2.toLowerCase())
-          }
-        });
-      } else {
-        toast.success(`${name.common} added to favorites!`, {
-          duration: 3000,
-          action: {
-            label: 'View All',
-            onClick: () => window.location.href = '/favorites'
-          }
-        });
-      }
-    }
-  }, [isAuthenticated, toggleFavorite, cca2, isFavorited, name.common]);
-
   // Create sparkle effect function
   const createSparkleEffect = useCallback((button: HTMLElement) => {
     const sparkles = 12;
@@ -145,6 +94,59 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
       };
     }
   }, []);
+
+  // Memoized favorite click handler
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Stop event bubbling
+    
+    if (isAuthenticated) {
+      const wasAlreadyFavorited = isFavorited;
+      
+      // Trigger heart-beat animation
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 600);
+      
+      // Add visual feedback animation
+      const button = e.currentTarget as HTMLButtonElement;
+      button.style.transform = 'scale(0.8)';
+      
+      // Create sparkle effect for adding to favorites
+      if (!wasAlreadyFavorited) {
+        createSparkleEffect(button);
+      }
+      
+      setTimeout(() => {
+        button.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          button.style.transform = 'scale(1)';
+        }, 150);
+      }, 100);
+      
+      toggleFavorite(cca2.toLowerCase());
+      
+      // Show toast notification
+      if (wasAlreadyFavorited) {
+        toast.info(`${name.common} removed from favorites`, {
+          duration: 3000,
+          action: {
+            label: 'Undo',
+            onClick: () => toggleFavorite(cca2.toLowerCase())
+          }
+        });
+      } else {
+        toast.success(`${name.common} added to favorites!`, {
+          duration: 3000,
+          action: {
+            label: 'View All',
+            onClick: () => window.location.href = '/favorites'
+          }
+        });
+      }
+    }
+  }, [isAuthenticated, toggleFavorite, cca2, isFavorited, name.common, createSparkleEffect]);
+
+
 
   // Memoized formatted values
   const formattedPopulation = formatPopulation(population);

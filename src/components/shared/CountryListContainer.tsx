@@ -96,12 +96,17 @@ export default function CountryListContainer({ countries }: CountryListContainer
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center mb-8 pt-8 pb-12">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-gray-100">
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent mb-6 dark:from-gray-100 dark:via-gray-200 dark:to-gray-300 tracking-tight" 
+                style={{
+                  textShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+                }}>
               Explore Countries Around the World
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
-              Discover detailed information about {countries.length} countries, including population, 
-              regions, capitals, and more. Use the search and filters below to find specific countries.
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300 leading-relaxed">
+              Discover detailed information about{' '}
+              <span className="font-semibold text-blue-600 dark:text-blue-400">{countries.length}</span>{' '}
+              countries, including population, regions, capitals, and more. Use the search and filters below to find specific countries.
             </p>
           </div>
         </div>

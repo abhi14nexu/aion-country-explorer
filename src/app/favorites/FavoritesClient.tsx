@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
+import Link from 'next/link';
 import { useAppStore } from '@/store/appStore';
 import { getAllCountries } from '@/lib/api';
 import { CountryBasic } from '@/types/country';
@@ -20,8 +21,7 @@ const FavoritesClient: React.FC = () => {
     exportFavorites, 
     importFavorites, 
     clearAllFavorites,
-    getRecentlyAdded,
-    getFavoritesByDate
+    getRecentlyAdded
   } = useAppStore();
   
   const [allCountries, setAllCountries] = useState<CountryBasic[]>([]);
@@ -153,9 +153,9 @@ const FavoritesClient: React.FC = () => {
       toast.success('Favorites exported successfully!', {
         duration: 4000,
       });
-    } catch (error) {
-      toast.error('Failed to export favorites');
-    }
+          } catch {
+        toast.error('Failed to export favorites');
+      }
   };
 
   // Import favorites
@@ -176,7 +176,7 @@ const FavoritesClient: React.FC = () => {
         } else {
           toast.error('Invalid file format. Please check your file and try again.');
         }
-      } catch (error) {
+      } catch {
         toast.error('Failed to read the file');
       }
     };
@@ -243,7 +243,7 @@ const FavoritesClient: React.FC = () => {
           <p className="text-gray-600 mb-6">
             Start exploring countries and add them to your favorites by clicking the heart icon!
           </p>
-          <a
+          <Link
             href="/"
             className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
           >
@@ -251,7 +251,7 @@ const FavoritesClient: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             Explore Countries
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -296,7 +296,7 @@ const FavoritesClient: React.FC = () => {
             </div>
             <div className="flex flex-wrap gap-2">
               {recentlyAddedCountries.map((country, index) => (
-                <a
+                <Link
                   key={country.cca2}
                   href={`/country/${country.cca2.toLowerCase()}`}
                   className="inline-flex items-center px-4 py-2 bg-white hover:bg-blue-100 text-blue-800 text-sm rounded-full transition-all duration-200 shadow-sm hover:shadow-md border border-blue-200 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-700 dark:hover:bg-blue-700/40 group"
@@ -310,7 +310,7 @@ const FavoritesClient: React.FC = () => {
                   <span className="font-medium">{country.name.common}</span>
                   {/* Small sparkle effect for recently added */}
                   <span className="ml-2 text-yellow-400 text-xs animate-pulse">✨</span>
-                </a>
+                </Link>
               ))}
             </div>
             {recentlyAddedCountries.length > 3 && (
@@ -358,21 +358,44 @@ const FavoritesClient: React.FC = () => {
               <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-white">Sort By</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { key: 'name', label: 'Name' },
-                  { key: 'dateAdded', label: 'Date Added' },
-                  { key: 'population', label: 'Population' },
-                  { key: 'region', label: 'Region' },
-                ].map(({ key, label }) => (
+                  { key: 'name', label: 'Name', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z' },
+                  { key: 'dateAdded', label: 'Date Added', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+                  { key: 'population', label: 'Population', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
+                  { key: 'region', label: 'Region', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+                ].map(({ key, label, icon }) => (
                   <button
                     key={key}
                     onClick={() => handleSortChange(key as SortOption)}
-                    className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
+                    className={`group px-3 py-2.5 text-sm font-medium rounded-xl border-2 transition-all duration-200 transform ${
                       sortBy === key
-                        ? 'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-white'
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700'
+                        ? 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-300 text-blue-800 shadow-lg scale-105 dark:from-blue-900/40 dark:to-blue-800/40 dark:border-blue-600 dark:text-blue-200'
+                        : 'bg-gradient-to-br from-white to-gray-50 border-gray-300 text-gray-700 hover:from-gray-50 hover:to-gray-100 hover:border-gray-400 hover:scale-105 hover:shadow-md dark:from-neutral-900 dark:to-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:from-neutral-800 dark:hover:to-neutral-700'
                     }`}
+                    style={{
+                      boxShadow: sortBy === key 
+                        ? '0 8px 25px -8px rgba(59, 130, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)' 
+                        : '0 4px 15px -4px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                    }}
                   >
-                    {label} {sortBy === key && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <span className="flex items-center justify-center gap-1.5">
+                      <svg className="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
+                      </svg>
+                      <span className="hidden sm:inline">{label}</span>
+                      <span className="sm:hidden">{label.split(' ')[0]}</span>
+                      {sortBy === key && (
+                        <svg 
+                          className={`w-4 h-4 ml-1 transform transition-transform duration-200 ${
+                            sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'
+                          }`} 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                        </svg>
+                      )}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -554,7 +577,7 @@ const FavoritesClient: React.FC = () => {
               Ready to discover more amazing countries?
             </p>
             <div className="space-x-4">
-              <a
+              <Link
                 href="/"
                 className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-blue-700 dark:hover:bg-blue-800"
               >
@@ -562,7 +585,7 @@ const FavoritesClient: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 Explore All Countries
-              </a>
+              </Link>
               
               {favorites.length > 0 && (
                 <button

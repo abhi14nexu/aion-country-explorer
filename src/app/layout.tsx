@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Aion Country Explorer",
   description: "Explore detailed information about countries around the world. Discover population, regions, capitals, and more with our interactive country explorer.",
   keywords: "countries, world, geography, population, capitals, regions, flags",
+  icons: {
+    icon: "/images/favicon.ico",
+  },
 };
 
 export default function RootLayout({

@@ -32,7 +32,14 @@ const currencySchema = z.object({
 // Maps schema
 const mapsSchema = z.object({
   googleMaps: z.string().url().nullable().optional(),
-  openStreetMaps: z.string().url().nullable().optional(),
+  openStreetMaps: z.string().nullable().optional().transform(val => {
+    if (!val || val === null) return undefined;
+    // Some OpenStreetMaps URLs come without protocol, add https:// if missing
+    if (typeof val === 'string' && !val.startsWith('http')) {
+      return `https://${val}`;
+    }
+    return val;
+  }).pipe(z.string().url().optional()),
 });
 
 // Car information schema
@@ -74,7 +81,7 @@ export const countryDetailSchema = z.object({
   name: z.object({
     common: z.string(),
     official: z.string(),
-    nativeName: z.record(z.string(), nativeNameSchema).nullable().optional(),
+    nativeName: z.record(z.string(), nativeNameSchema).nullable().optional().transform(val => val === null ? undefined : val),
   }),
   cca2: z.string(),
   cca3: z.string(),

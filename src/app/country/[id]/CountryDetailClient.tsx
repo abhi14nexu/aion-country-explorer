@@ -4,14 +4,14 @@ import React, { useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Country } from '@/types/country';
 import { FormattedCountryData } from '@/types/country';
+import { type CountryDetailType } from '@/lib/validation';
 import { useAppStore } from '@/store/appStore';
 import { ComponentErrorBoundary } from '@/components/ui/ErrorBoundary';
 
 interface CountryDetailClientProps {
-  country: Country;
-  borderCountries: Country[];
+  country: CountryDetailType;
+  borderCountries: CountryDetailType[];
 }
 
 const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
@@ -30,7 +30,7 @@ const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
       officialName: country.name.official || country.name.common,
       commonName: country.name.common,
       nativeNames: country.name.nativeName 
-        ? Object.values(country.name.nativeName).map(name => name.common)
+        ? Object.values(country.name.nativeName).map((name: { common: string; official: string }) => name.common)
         : [],
       region: country.region,
       subregion: country.subregion || 'N/A',
@@ -51,8 +51,8 @@ const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
       continents: country.continents || [],
       borders: country.borders || [],
       maps: {
-        google: country.maps?.googleMaps,
-        openStreetMap: country.maps?.openStreetMaps,
+        google: country.maps?.googleMaps || undefined,
+        openStreetMap: country.maps?.openStreetMaps || undefined,
       },
     };
 

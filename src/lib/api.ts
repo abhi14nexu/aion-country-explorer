@@ -1,7 +1,8 @@
-import { CountryBasic, Country } from '@/types/country';
+import { CountryBasic } from '@/types/country';
 import { 
   safeValidateCountryBasic,
-  safeValidateCountryDetail 
+  safeValidateCountryDetail,
+  type CountryDetailType
 } from '@/lib/validation';
 
 const REST_COUNTRIES_API = 'https://restcountries.com/v3.1';
@@ -105,7 +106,7 @@ export async function getAllCountries(): Promise<CountryBasic[]> {
  * Get detailed country information by country code
  * Uses SSG with 24-hour revalidation for optimal performance
  */
-export async function getCountryByCode(code: string): Promise<Country> {
+export async function getCountryByCode(code: string): Promise<CountryDetailType> {
   if (!code || typeof code !== 'string') {
     throw new CountryAPIError(
       'Invalid country code provided',
@@ -162,7 +163,7 @@ export async function getCountryByCode(code: string): Promise<Country> {
  * Get multiple countries by their codes
  * Useful for fetching border countries
  */
-export async function getCountriesByCodes(codes: string[]): Promise<Country[]> {
+export async function getCountriesByCodes(codes: string[]): Promise<CountryDetailType[]> {
   if (!Array.isArray(codes) || codes.length === 0) {
     return [];
   }
@@ -186,7 +187,7 @@ export async function getCountriesByCodes(codes: string[]): Promise<Country[]> {
     }
 
     // Validate and transform each country
-    const validatedCountries: Country[] = [];
+    const validatedCountries: CountryDetailType[] = [];
     
     for (const item of data) {
       const result = safeValidateCountryDetail(item);

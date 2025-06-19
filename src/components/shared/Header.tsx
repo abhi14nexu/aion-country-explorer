@@ -5,12 +5,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/appStore';
-import { useTheme } from '@/hooks/useTheme';
 
 export default function Header() {
   const { isAuthenticated, logout } = useAppStore();
   const router = useRouter();
-  const [theme, toggleTheme] = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -85,7 +83,7 @@ export default function Header() {
 
               {/* Right Side Controls */}
               <div className="flex items-center space-x-2 sm:space-x-3">
-                {/* Theme Toggle Button */}
+                {/* Theme Toggle Button
                 <button
                   onClick={toggleTheme}
                   className="p-1.5 sm:p-2 rounded-full bg-white/50 dark:bg-gray-800/50 border border-white/30 dark:border-gray-600/30 hover:bg-white/70 dark:hover:bg-gray-700/50 transition-all duration-300 backdrop-blur-sm"
@@ -101,7 +99,7 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
                     </svg>
                   )}
-                </button>
+                </button> */}
 
                 {/* Desktop Authentication Controls */}
                 <div className="hidden lg:flex items-center space-x-2 sm:space-x-3">

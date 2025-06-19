@@ -191,7 +191,7 @@ export const useAppStore = create<AppState>()(
           const newMetadata = { ...currentMetadata };
           let addedCount = 0;
           
-          importData.favorites.forEach((item: any) => {
+          importData.favorites.forEach((item: { code?: string; addedAt?: number; notes?: string }) => {
             if (item.code && typeof item.code === 'string') {
               const normalizedCode = item.code.toLowerCase();
               

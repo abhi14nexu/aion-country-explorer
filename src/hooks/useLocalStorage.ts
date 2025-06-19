@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 /**
  * Custom hook for managing localStorage with TypeScript support
@@ -119,52 +119,56 @@ export const useLocalStorageState = <T>(key: string, initialValue: T) => {
 };
 
 /**
- * Hook for managing multiple localStorage keys as a batch
- * Useful for managing related settings or preferences
+ * Utility function for managing multiple localStorage keys
+ * Note: This is not a hook and should not be used inside React components
+ * Use individual useLocalStorage calls instead
  * 
  * @param keys - Array of localStorage keys with their initial values
  * @returns Object with batch operations
  */
-export const useLocalStorageBatch = <T extends Record<string, any>>(
-  keys: Record<keyof T, any>
+export const createLocalStorageBatch = <T extends Record<string, unknown>>(
+  keys: Record<keyof T, unknown>
 ) => {
-  const storageHooks = Object.entries(keys).reduce((acc, [key, initialValue]) => {
-    const [value, setValue, removeValue] = useLocalStorage(key, initialValue);
-    acc[key] = { value, setValue, removeValue };
-    return acc;
-  }, {} as Record<string, any>);
-
   // Get all values
-  const getAllValues = useCallback(() => {
-    return Object.entries(storageHooks).reduce((acc, [key, hook]) => {
-      acc[key] = hook.value;
-      return acc;
-    }, {} as T);
-  }, [storageHooks]);
+  const getAllValues = (): T => {
+    const result = {} as Record<string, unknown>;
+    Object.entries(keys).forEach(([key, initialValue]) => {
+      try {
+        const item = window.localStorage.getItem(key);
+        result[key] = item ? JSON.parse(item) : initialValue;
+      } catch (error) {
+        console.warn(`Error reading localStorage key "${key}":`, error);
+        result[key] = initialValue;
+      }
+    });
+    return result as T;
+  };
 
   // Set multiple values
-  const setValues = useCallback(
-    (values: Partial<T>) => {
-      Object.entries(values).forEach(([key, value]) => {
-        if (storageHooks[key]) {
-          storageHooks[key].setValue(value);
-        }
-      });
-    },
-    [storageHooks]
-  );
+  const setValues = (values: Partial<T>) => {
+    Object.entries(values).forEach(([key, value]) => {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      } catch (error) {
+        console.warn(`Error setting localStorage key "${key}":`, error);
+      }
+    });
+  };
 
   // Clear all values
-  const clearAll = useCallback(() => {
-    Object.values(storageHooks).forEach((hook: any) => {
-      hook.removeValue();
+  const clearAll = () => {
+    Object.keys(keys).forEach((key) => {
+      try {
+        window.localStorage.removeItem(key);
+      } catch (error) {
+        console.warn(`Error removing localStorage key "${key}":`, error);
+      }
     });
-  }, [storageHooks]);
+  };
 
   return {
-    values: getAllValues(),
+    getAllValues,
     setValues,
     clearAll,
-    individual: storageHooks,
   };
 }; 

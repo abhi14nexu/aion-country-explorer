@@ -70,7 +70,7 @@ export const useDebouncedSearch = (searchTerm: string, delay: number = 300) => {
  * @param delay - Delay in milliseconds
  * @returns Object with debounced values
  */
-export const useDebounceMultiple = <T extends Record<string, any>>(
+export const useDebounceMultiple = <T extends Record<string, unknown>>(
   values: T,
   delay: number
 ): T => {

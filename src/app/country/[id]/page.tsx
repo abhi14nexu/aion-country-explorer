@@ -1,16 +1,13 @@
 import React from 'react';
 import { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllCountries, getCountryByCode, getCountriesByCodes, isValidCountryCode } from '@/lib/api';
-import { Country } from '@/types/country';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import CountryDetailClient from './CountryDetailClient';
 
 interface CountryPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // Generate static params for all countries at build time
@@ -31,7 +28,7 @@ export async function generateStaticParams() {
 // Generate metadata for each country page
 export async function generateMetadata({ params }: CountryPageProps): Promise<Metadata> {
   try {
-    const countryCode = params.id;
+    const { id: countryCode } = await params;
     
     if (!isValidCountryCode(countryCode)) {
       return {
@@ -78,7 +75,7 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
 
 // Server component for fetching data
 export default async function CountryPage({ params }: CountryPageProps) {
-  const countryCode = params.id;
+  const { id: countryCode } = await params;
 
   // Validate country code format
   if (!isValidCountryCode(countryCode)) {

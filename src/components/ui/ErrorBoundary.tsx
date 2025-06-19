@@ -201,7 +201,7 @@ export const AsyncErrorBoundary: React.FC<{
 }> = ({ children, onError }) => {
   return (
     <ErrorBoundary
-      onError={(error, errorInfo) => {
+      onError={(error) => {
         console.error('Async operation failed:', error);
         if (onError) {
           onError(error);
