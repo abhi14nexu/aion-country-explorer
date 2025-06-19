@@ -95,10 +95,10 @@ export default function CountryListContainer({ countries }: CountryListContainer
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-gray-100">
             Explore Countries Around the World
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
             Discover detailed information about {countries.length} countries, including population, 
             regions, capitals, and more. Use the search and filters below to find specific countries.
           </p>
@@ -126,15 +126,15 @@ export default function CountryListContainer({ countries }: CountryListContainer
         {filteredAndSortedCountries.length === 0 && !isSearching && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2 dark:text-gray-100">
               No countries found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 dark:text-gray-300">
               Try adjusting your search terms or filters to find what you&apos;re looking for.
             </p>
             <button
               onClick={clearAllFilters}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors dark:bg-blue-700 dark:hover:bg-blue-800"
             >
               Clear All Filters
             </button>
@@ -159,30 +159,30 @@ export default function CountryListContainer({ countries }: CountryListContainer
         {isSearching && filteredAndSortedCountries.length === 0 && (
           <div className="text-center py-8">
             <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Searching countries...</p>
+            <p className="text-gray-600 dark:text-gray-300">Searching countries...</p>
           </div>
         )}
 
         {/* Footer Stats */}
         {filteredAndSortedCountries.length > 0 && (
-          <div className="mt-12 text-center text-gray-500">
+          <div className="mt-12 text-center text-gray-500 dark:text-gray-400">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-neutral-900">
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {filteredAndSortedCountries.length}
                 </div>
                 <div className="text-sm">Countries Shown</div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="text-2xl font-bold text-green-600">
+              <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-neutral-900">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {new Set(filteredAndSortedCountries.map(c => c.region)).size}
                 </div>
                 <div className="text-sm">Regions</div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="text-2xl font-bold text-purple-600">
+              <div className="bg-white rounded-lg shadow-sm p-4 dark:bg-neutral-900">
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                   {Math.round(filteredAndSortedCountries.reduce((sum, country) => sum + country.population, 0) / 1000000)}M
                 </div>
                 <div className="text-sm">Total Population</div>

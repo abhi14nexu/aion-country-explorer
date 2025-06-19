@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback } from 'react';
-import { useDebouncedSearch } from '@/hooks/useDebounce';
 
 interface SearchAndFilterProps {
   searchTerm: string;
@@ -80,7 +79,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
               placeholder="Search countries by name, capital, or region..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-gray-100 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors"
             />
             {searchTerm && (
               <button
@@ -108,7 +107,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-gray-100 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors"
             >
               <option value="">All Regions</option>
               {availableRegions.map(region => (
@@ -136,8 +135,8 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
               onClick={() => handleSortChange('name')}
               className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
                 sortBy === 'name'
-                  ? 'bg-blue-100 border-blue-300 text-blue-800'
-                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                  ? 'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200'
+                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-800'
               }`}
             >
               Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -146,8 +145,8 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
               onClick={() => handleSortChange('population')}
               className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
                 sortBy === 'population'
-                  ? 'bg-blue-100 border-blue-300 text-blue-800'
-                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                  ? 'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200'
+                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-800'
               }`}
             >
               Population {sortBy === 'population' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -158,7 +157,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
           {(hasActiveSearch || selectedRegion) && (
             <button
               onClick={clearSearch}
-              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors dark:bg-neutral-800 dark:text-gray-200 dark:hover:bg-neutral-700"
             >
               Clear All Filters
             </button>
@@ -166,7 +165,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
         </div>
 
         {/* Results Summary */}
-        <div className="flex flex-wrap items-center justify-between mb-6 text-sm text-gray-600">
+        <div className="flex flex-wrap items-center justify-between mb-6 text-sm text-gray-600 dark:text-gray-300">
           <div className="flex flex-wrap items-center gap-4">
             <span>
               Showing {filteredCount} of {totalCountries} countries
@@ -176,7 +175,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
             {/* Active Filters */}
             <div className="flex flex-wrap gap-2">
               {hasActiveSearch && (
-                <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded dark:bg-blue-900 dark:text-blue-200">
                   Search: &quot;{debouncedSearchTerm}&quot;
                   <button
                     onClick={clearSearchTerm}
@@ -187,7 +186,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
                 </span>
               )}
               {selectedRegion && (
-                <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded dark:bg-green-900 dark:text-green-200">
                   Region: {selectedRegion}
                   <button
                     onClick={clearRegionFilter}

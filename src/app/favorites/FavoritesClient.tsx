@@ -268,10 +268,10 @@ const FavoritesClient: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4 dark:text-white">
             My Favorite Countries
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-white">
             You have {favorites.length} favorite {favorites.length === 1 ? 'country' : 'countries'}. 
             Organize, sort, and manage your collection with the tools below.
           </p>
@@ -307,16 +307,16 @@ const FavoritesClient: React.FC = () => {
         )}
 
         {/* Controls */}
-        <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+        <div className="mb-8 bg-white rounded-lg shadow-sm p-6 dark:bg-neutral-900">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Filtering */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Filter & View</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-white">Filter & View</h3>
               <div className="space-y-3">
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm dark:bg-neutral-800 dark:border-neutral-700 dark:text-gray-100 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors"
                 >
                   <option value="">All Regions</option>
                   {availableRegions.map(region => (
@@ -333,14 +333,14 @@ const FavoritesClient: React.FC = () => {
                     onChange={(e) => setShowRecentlyAdded(e.target.checked)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Recently added only</span>
+                  <span className="ml-2 text-sm text-gray-700 dark:text-white">Recently added only</span>
                 </label>
               </div>
             </div>
 
             {/* Sorting */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Sort By</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-white">Sort By</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { key: 'name', label: 'Name' },
@@ -353,8 +353,8 @@ const FavoritesClient: React.FC = () => {
                     onClick={() => handleSortChange(key as SortOption)}
                     className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
                       sortBy === key
-                        ? 'bg-blue-100 border-blue-300 text-blue-800'
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? 'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-white'
+                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700'
                     }`}
                   >
                     {label} {sortBy === key && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -365,11 +365,11 @@ const FavoritesClient: React.FC = () => {
 
             {/* Actions */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Manage</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-white">Manage</h3>
               <div className="space-y-2">
                 <button
                   onClick={handleExport}
-                  className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors dark:bg-green-700 dark:hover:bg-green-800"
                 >
                   Export Favorites
                 </button>
@@ -382,7 +382,7 @@ const FavoritesClient: React.FC = () => {
                     onChange={handleImport}
                     className="sr-only"
                   />
-                  <span className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer inline-block text-center">
+                  <span className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer inline-block text-center dark:bg-blue-700 dark:hover:bg-blue-800">
                     Import Favorites
                   </span>
                 </label>
@@ -390,7 +390,7 @@ const FavoritesClient: React.FC = () => {
                 <button
                   onClick={handleClearAll}
                   disabled={favorites.length === 0}
-                  className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+                  className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors dark:bg-red-700 dark:hover:bg-red-800 dark:disabled:bg-neutral-700"
                 >
                   Clear All
                 </button>
@@ -402,34 +402,34 @@ const FavoritesClient: React.FC = () => {
         {/* Statistics */}
         <div className="mb-8">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="bg-white rounded-lg shadow-md p-4 text-center dark:bg-neutral-900">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {filteredAndSortedFavorites.length}
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-white">
                 {selectedRegion || showRecentlyAdded ? 'Shown' : 'Total'} Favorites
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">
+            <div className="bg-white rounded-lg shadow-md p-4 text-center dark:bg-neutral-900">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {new Set(filteredAndSortedFavorites.map(c => c.region)).size}
               </div>
-              <div className="text-sm text-gray-600">Regions</div>
+              <div className="text-sm text-gray-600 dark:text-white">Regions</div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">
+            <div className="bg-white rounded-lg shadow-md p-4 text-center dark:bg-neutral-900">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                 {Math.round(filteredAndSortedFavorites.reduce((sum, country) => sum + country.population, 0) / 1000000)}M
               </div>
-              <div className="text-sm text-gray-600">Total Population</div>
+              <div className="text-sm text-gray-600 dark:text-white">Total Population</div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-4 text-center">
-              <div className="text-2xl font-bold text-orange-600">
+            <div className="bg-white rounded-lg shadow-md p-4 text-center dark:bg-neutral-900">
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                 {getRecentlyAdded().length}
               </div>
-              <div className="text-sm text-gray-600">Recent Additions</div>
+              <div className="text-sm text-gray-600 dark:text-white">Recent Additions</div>
             </div>
           </div>
         </div>
@@ -477,7 +477,7 @@ const FavoritesClient: React.FC = () => {
         {/* Regions Breakdown */}
         {filteredAndSortedFavorites.length > 0 && !selectedRegion && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center dark:text-white">
               Favorites by Region
             </h2>
             <div className="flex flex-wrap justify-center gap-2">
@@ -487,7 +487,7 @@ const FavoritesClient: React.FC = () => {
                   <button
                     key={region}
                     onClick={() => setSelectedRegion(region)}
-                    className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm rounded-full transition-colors cursor-pointer"
+                    className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm rounded-full transition-colors cursor-pointer dark:bg-blue-900 dark:hover:bg-blue-800 dark:text-blue-200"
                   >
                     {region} ({count})
                   </button>
@@ -501,10 +501,10 @@ const FavoritesClient: React.FC = () => {
         {filteredAndSortedFavorites.length === 0 && favorites.length > 0 && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2 dark:text-white">
               No favorites match your filters
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 dark:text-white">
               Try adjusting your filter settings to see more results.
             </p>
             <button
@@ -512,7 +512,7 @@ const FavoritesClient: React.FC = () => {
                 setSelectedRegion('');
                 setShowRecentlyAdded(false);
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-blue-700 dark:hover:bg-blue-800"
             >
               Clear All Filters
             </button>
@@ -535,13 +535,13 @@ const FavoritesClient: React.FC = () => {
         {/* Footer Actions */}
         <div className="mt-12 text-center">
           <div className="space-y-4">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-white">
               Ready to discover more amazing countries?
             </p>
             <div className="space-x-4">
               <a
                 href="/"
-                className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -564,7 +564,7 @@ const FavoritesClient: React.FC = () => {
                       toast.success('Link copied to clipboard!');
                     }
                   }}
-                  className="inline-flex items-center bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                  className="inline-flex items-center bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-gray-700 dark:hover:bg-gray-800"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />

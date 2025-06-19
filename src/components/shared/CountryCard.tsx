@@ -65,7 +65,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
 
   return (
     <div className="group block transform transition-transform duration-200 hover:scale-105">
-      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden dark:bg-neutral-900 dark:shadow-lg">
         {/* Flag Image */}
         <Link href={`/country/${cca2.toLowerCase()}`}>
           <div className="relative h-48 w-full">
@@ -75,10 +75,10 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
               fill
               className="object-cover group-hover:brightness-110 transition-all duration-200"
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              priority={priority} // Optimize loading for above-the-fold images
-              quality={85} // Slight compression for faster loading
+              priority={priority}
+              quality={85}
               placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rw=" // Low-quality placeholder
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Rw="
             />
           </div>
         </Link>
@@ -87,13 +87,13 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
         <div className="p-6">
           {/* Country Name */}
           <Link href={`/country/${cca2.toLowerCase()}`}>
-            <h3 className="font-bold text-xl mb-4 text-gray-800 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
+            <h3 className="font-bold text-xl mb-4 text-gray-800 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 dark:text-gray-100 dark:group-hover:text-blue-400">
               {name.common}
             </h3>
           </Link>
 
           {/* Country Details */}
-          <div className="space-y-2 text-gray-600">
+          <div className="space-y-2 text-gray-600 dark:text-gray-300">
             <div className="flex">
               <span className="font-semibold min-w-20 flex-shrink-0">Population:</span>
               <span className="truncate">{formattedPopulation}</span>
@@ -117,7 +117,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
               disabled={!isAuthenticated}
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                 isAuthenticated
-                  ? 'hover:bg-red-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300'
+                  ? 'hover:bg-red-50 dark:hover:bg-red-900 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-700'
                   : 'cursor-not-allowed opacity-50'
               }`}
               title={isAuthenticated ? (isFavorited ? 'Remove from favorites' : 'Add to favorites') : 'Login to add favorites'}
@@ -125,10 +125,10 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, priority = false }) 
             >
               <span className={`text-lg transition-colors duration-200 ${
                 isFavorited && isAuthenticated 
-                  ? 'text-red-500' 
+                  ? 'text-red-500 dark:text-red-400' 
                   : isAuthenticated 
-                    ? 'text-gray-400 hover:text-red-400' 
-                    : 'text-gray-300'
+                    ? 'text-gray-400 hover:text-red-400 dark:text-gray-500 dark:hover:text-red-300' 
+                    : 'text-gray-300 dark:text-gray-600'
               }`}>
                 {isFavorited && isAuthenticated ? '❤️' : '🤍'}
               </span>
