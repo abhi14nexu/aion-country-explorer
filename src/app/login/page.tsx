@@ -167,10 +167,10 @@ export default function LoginPage() {
               <strong>Demo Credentials:</strong>
             </div>
             <div className="text-sm text-gray-500 mt-1">
-              Username: <code className="bg-gray-100 px-1 rounded">testuser</code>
+              Username: <code className="bg-gray-100 px-1 rounded font-mono">testuser</code>
             </div>
             <div className="text-sm text-gray-500">
-              Password: <code className="bg-gray-100 px-1 rounded">password123</code>
+              Password: <code className="bg-gray-100 px-1 rounded font-mono">password123</code>
             </div>
           </div>
         </form>

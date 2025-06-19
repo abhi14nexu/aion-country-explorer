@@ -274,7 +274,7 @@ const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
                     {formattedData.culture.currencies.map((currency, index) => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                         <span className="font-medium">{currency.name}</span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 font-mono">
                           {currency.symbol} ({currency.code})
                         </span>
                       </div>
@@ -295,15 +295,15 @@ const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
           <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Geography</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <InfoItem label="Coordinates" value={formattedData.geography.coordinates} />
+              <InfoItem label="Coordinates" value={<span className="font-mono">{formattedData.geography.coordinates}</span>} />
               <InfoItem 
                 label="Continents" 
                 value={formattedData.geography.continents.join(', ') || 'Unknown'} 
               />
               <InfoItem 
                 label="Timezones" 
-                value={formattedData.geography.timezones.slice(0, 3).join(', ') + 
-                       (formattedData.geography.timezones.length > 3 ? '...' : '')} 
+                value={<span className="font-mono">{formattedData.geography.timezones.slice(0, 3).join(', ') + 
+                       (formattedData.geography.timezones.length > 3 ? '...' : '')}</span>} 
               />
             </div>
 
@@ -382,15 +382,15 @@ const CountryDetailClient: React.FC<CountryDetailClientProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <InfoItem label="Driving Side" value={formattedData.additional.carSide} />
               <InfoItem label="Start of Week" value={formattedData.additional.startOfWeek} />
-              <InfoItem label="FIFA Code" value={formattedData.additional.fifaCode} />
+              <InfoItem label="FIFA Code" value={<span className="font-mono">{formattedData.additional.fifaCode}</span>} />
               <InfoItem label="Gini Index" value={formattedData.additional.giniIndex} />
               <InfoItem 
                 label="Calling Codes" 
-                value={formattedData.culture.callingCodes.map(code => `+${code}`).join(', ') || 'Unknown'} 
+                value={<span className="font-mono">{formattedData.culture.callingCodes.map(code => `+${code}`).join(', ') || 'Unknown'}</span>} 
               />
               <InfoItem 
                 label="Top Level Domains" 
-                value={formattedData.culture.topLevelDomains.join(', ') || 'Unknown'} 
+                value={<span className="font-mono">{formattedData.culture.topLevelDomains.join(', ') || 'Unknown'}</span>} 
               />
             </div>
           </div>

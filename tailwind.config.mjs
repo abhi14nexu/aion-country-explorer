@@ -12,6 +12,11 @@ export default {
   ],
   theme: {
     extend: {
+      // Configure modern fonts: Geist as primary, Geist Mono as secondary
+      fontFamily: {
+        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
